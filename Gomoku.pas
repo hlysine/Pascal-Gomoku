@@ -1,7 +1,7 @@
 program Gomoku;
 uses crt,sysutils;
 {----------game data structure----------}
-const boardSize = 34;
+const boardSize = 15;
       winCount = 5;
 type 
     state = (p1,p2,null);
@@ -315,8 +315,8 @@ begin
     end
     else
     begin
-        scrWidth := 150;
-        scrHeight := 81;
+        scrWidth := 120;
+        scrHeight := 45;
         assign(configfile,configdir);
         rewrite(configfile);
         write(configfile,scrWidth);
