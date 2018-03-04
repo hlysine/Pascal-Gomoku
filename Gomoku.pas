@@ -3,6 +3,8 @@ uses crt,sysutils;
 {----------game data structure----------}
 const boardSize = 15;
       winCount = 5;
+      defaultScrWidth = 120;
+      defaultScrHeight = 45;
 type 
     state = (p1,p2,null);
     game = record
@@ -315,8 +317,8 @@ begin
     end
     else
     begin
-        scrWidth := 120;
-        scrHeight := 45;
+        scrWidth := defaultScrWidth;
+        scrHeight := defaultScrHeight;
         assign(configfile,configdir);
         rewrite(configfile);
         write(configfile,scrWidth);
