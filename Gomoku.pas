@@ -27,109 +27,120 @@ begin
             g.board[i,j] := null;
 end;
 
-function chkRow(g : game; x : integer) : boolean;
+{
+    4 check functions for four directions from the center
+    (the location of the new move)
+    *   *   *
+     *  *  *
+      * * *
+       ***
+    ****X****
+       ***
+      * * *
+     *  *  *
+    *   *   *
+}
+function chkRow(g : game; x,y : integer) : boolean;
 var i,count : integer;
 begin
-    chkRow := false;
     count := 0;
-    i := 0;
-    repeat
+    i := 1;
+    while (x-i>=1) and (i<winCount) and (count<winCount) and (g.board[x-i,y] = g.board[x,y]) do
+    begin
         i := i + 1;
-        if g.board[x,i] = g.playTurn then
-            count := count + 1
-        else
-            count := 0;
-    until (i = boardSize) or (count >= winCount);
+    end;
+    count := count + i;
     if count >= winCount then
-        chkRow := true;
+        chkRow := true
+    else
+    begin
+        i := 1;
+        while (x+i<=boardSize) and (i<winCount) and (count<winCount) and (g.board[x+i,y] = g.board[x,y]) do
+        begin
+            i := i + 1;
+            count := count + 1;
+        end;
+        if count - 1 >= winCount then
+            chkRow := true
+        else chkRow := false;
+    end;
 end;
 
-function chkCol(g : game; y : integer) : boolean;
+function chkCol(g : game; x,y : integer) : boolean;
 var i,count : integer;
 begin
-    chkCol := false;
     count := 0;
-    i := 0;
-    repeat
+    i := 1;
+    while (y-i>=1) and (i<winCount) and (count<winCount) and (g.board[x,y-i] = g.board[x,y]) do
+    begin
         i := i + 1;
-        if g.board[i,y] = g.playTurn then
-            count := count + 1
-        else
-            count := 0;
-    until (i = boardSize) or (count >= winCount);
+    end;
+    count := count + i;
     if count >= winCount then
-        chkCol := true;
+        chkCol := true
+    else
+    begin
+        i := 1;
+        while (y+i<=boardSize) and (i<winCount) and (count<winCount) and (g.board[x,y+i] = g.board[x,y]) do
+        begin
+            i := i + 1;
+            count := count + 1;
+        end;
+        if count-1 >= winCount then
+            chkCol := true
+        else chkCol := false;
+    end;
 end;
 
 function chkDiagonalTopLeft(g : game; x,y:integer) : boolean;
-var i,count,offset : integer;
+var i,count : integer;
 begin
-    chkDiagonalTopLeft := false;
-    if (x>y) then
+    count := 0;
+    i := 1;
+    while (y-i>=1) and (x-i>=1) and (i<winCount) and (count<winCount) and (g.board[x-i,y-i] = g.board[x,y]) do
     begin
-        offset := x-y;
-        count := 0;
-        i := 0;
-        repeat
-            i := i + 1;
-            if g.board[i+offset,i] = g.playTurn then
-                count := count + 1
-            else
-                count := 0;
-        until (i = boardSize) or (i+offset = boardSize) or (count >= winCount);
-        if count >= winCount then
-            chkDiagonalTopLeft := true;
-    end
+        i := i + 1;
+    end;
+    count := count + i;
+    if count >= winCount then
+        chkDiagonalTopLeft := true
     else
     begin
-        offset := y-x;
-        count := 0;
-        i := 0;
-        repeat
+        i := 1;
+        while (y+i<=boardSize) and (x+i<=boardSize) and (i<winCount) and (count<winCount) and (g.board[x+i,y+i] = g.board[x,y]) do
+        begin
             i := i + 1;
-            if g.board[i,i+offset] = g.playTurn then
-                count := count + 1
-            else
-                count := 0;
-        until (i = boardSize) or (i+offset = boardSize) or (count >= winCount);
-        if count >= winCount then
-            chkDiagonalTopLeft := true;
+            count := count + 1;
+        end;
+        if count-1 >= winCount then
+            chkDiagonalTopLeft := true
+        else chkDiagonalTopLeft := false;
     end;
 end;
 
 function chkDiagonalTopRight(g : game; x,y:integer) : boolean;
 var i,count,offset : integer;
 begin
-    chkDiagonalTopRight := false;
-    if (boardSize + 1 - x>y) then
+    count := 0;
+    i := 1;
+    while (y-i>=1) and (x+i<=boardSize) and (i<winCount) and (count<winCount) and (g.board[x+i,y-i] = g.board[x,y]) do
     begin
-        offset := boardSize + 1 - x - y;
-        count := 0;
-        i := 0;
-        repeat
-            i := i + 1;
-            if g.board[boardSize+1-i-offset,i] = g.playTurn then
-                count := count + 1
-            else
-                count := 0;
-        until (i = boardSize) or (boardSize+1-i-offset = 1) or (count >= winCount);
-        if count >= winCount then
-            chkDiagonalTopRight := true;
-    end
+        i := i + 1;
+    end;
+    count := count + i;
+    if count >= winCount then
+        chkDiagonalTopRight := true
     else
     begin
-        offset := y-(boardSize + 1 - x);
-        count := 0;
-        i := 0;
-        repeat
+        i := 1;
+        while (y+i<=boardSize) and (x-i>=1) and (i<winCount) and (count<winCount) and (g.board[x-i,y+i] = g.board[x,y]) do
+        begin
             i := i + 1;
-            if g.board[i,boardSize+1-i-offset] = g.playTurn then
-                count := count + 1
-            else
-                count := 0;
-        until (i = boardSize) or (boardSize+1-i-offset = 1) or (count >= winCount);
-        if count >= winCount then
-            chkDiagonalTopRight := true;
+            count := count + 1;
+        end;
+        if count-1 >= winCount then
+            chkDiagonalTopRight := true
+        else chkDiagonalTopRight := false;
     end;
 end;
 
@@ -150,8 +161,8 @@ begin
 
         {check winning}
         won := false;
-        won := won or chkRow(g,mX);
-        won := won or chkCol(g,mY);
+        won := won or chkRow(g,mX,mY);
+        won := won or chkCol(g,mX,mY);
         won := won or chkDiagonalTopLeft(g,mX,mY);
         won := won or chkDiagonalTopRight(g,mX,mY);
         if won then

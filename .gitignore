@@ -4,3 +4,6 @@
 *.bak
 *.exe
 *.ow
+GPATH
+GRTAGS
+GTAGS
